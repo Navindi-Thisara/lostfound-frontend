@@ -5,7 +5,7 @@ import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './routes/PrivateRoute';
 // @ts-ignore
-import NavBar from "./components/NavBar"; // ✅ Import NavBar
+import NavBar from "./components/Navbar"; // ✅ Import Navbar
 
 const App: React.FC = () => {
     return (
