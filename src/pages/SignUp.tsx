@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API from '../api/axios'; // axios instance
 
 const SignUp: React.FC = () => {
     const [name, setName] = useState('');
@@ -7,12 +8,13 @@ const SignUp: React.FC = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validation
+        // Client-side validation
         if (!name || !email || !password || !confirmPassword) {
             setError('All fields are required.');
             return;
@@ -23,12 +25,27 @@ const SignUp: React.FC = () => {
             return;
         }
 
-        // TODO: Send data to backend API (e.g., POST /api/signup)
-        console.log('User registered:', { name, email, password });
+        try {
+            const response = await API.post('/auth/register', {
+                name,
+                email,
+                password
+            });
 
-        setError('');
-        // Redirect to Sign In page
-        navigate('/');
+            setSuccess('Account created successfully!');
+            setError('');
+
+            // Redirect to sign-in page after a short delay
+            setTimeout(() => {
+                navigate('/');
+            }, 1500);
+        } catch (err: any) {
+            if (err.response?.data?.message) {
+                setError(err.response.data.message);
+            } else {
+                setError('Registration failed. Please try again.');
+            }
+        }
     };
 
     return (
@@ -64,6 +81,7 @@ const SignUp: React.FC = () => {
                     style={styles.input}
                 />
                 {error && <p style={styles.error}>{error}</p>}
+                {success && <p style={styles.success}>{success}</p>}
                 <button type="submit" style={styles.button}>Sign Up</button>
             </form>
         </div>
@@ -101,6 +119,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     error: {
         color: 'red',
+        fontSize: '0.9rem',
+    },
+    success: {
+        color: 'green',
         fontSize: '0.9rem',
     },
 };

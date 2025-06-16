@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API from '../api/axios'; // Make sure this path is correct
 
 const SignIn: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -7,22 +8,31 @@ const SignIn: React.FC = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Basic validation
         if (!email || !password) {
             setError('Please enter both email and password.');
             return;
         }
 
-        // TODO: Replace with real backend API call
-        if (email === 'admin@example.com' && password === '1234') {
+        try {
+            const response = await API.post('/auth/login', {
+                email,
+                password,
+            });
+
+            const token = response.data.token; // Your backend should return the JWT token in `token`
+            localStorage.setItem('token', token);
+
             setError('');
-            // After successful login
             navigate('/dashboard');
-        } else {
-            setError('Invalid email or password.');
+        } catch (err: any) {
+            if (err.response?.data?.message) {
+                setError(err.response.data.message);
+            } else {
+                setError('Login failed. Please try again.');
+            }
         }
     };
 
@@ -51,7 +61,6 @@ const SignIn: React.FC = () => {
     );
 };
 
-// Inline styling (optional – can be replaced with Tailwind or CSS)
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         maxWidth: '400px',
