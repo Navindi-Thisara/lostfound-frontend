@@ -17,44 +17,45 @@ This is the **frontend** of the **Lost and Found Application for an Educational 
 
 ## 📁 Project Structure
 
-public/
+## public/
 Static public assets (e.g., favicon.ico, index.html)
 
-src/
+## src/
 Source code directory
 
-api/
+## api/
 Axios instance and API call logic
 
-components/
+## components/
 Reusable UI components (e.g., forms, buttons)
 
-pages/
+## pages/
 Page-level components like SignIn, SignUp, Dashboard, etc.
 
-routes/
+## routes/
 Route configuration and ProtectedRoute logic
 
-types/
+## types/
 Custom TypeScript interfaces and types
 
-utils/
+## utils/
 Utility/helper functions (e.g., delete handler)
 
-App.tsx
+## App.tsx
 Main application component that defines routes
 
-main.tsx
+## main.tsx
 Application entry point that renders <App />
 
-tailwind.config.js
+## tailwind.config.js
 Tailwind CSS configuration
 
-tsconfig.json
+## tsconfig.json
 TypeScript configuration
 
-package.json
+## package.json
 Project dependencies and scripts
+
 ---
 
 ## 🛠️ Tech Stack
