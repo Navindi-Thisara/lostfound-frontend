@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import API from '../api/axios'; // Adjust path as needed
+import API from '../api/axios'; // Adjust path if needed
 
 const SignIn: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -10,6 +10,7 @@ const SignIn: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log('Sign In form submitted:', { email, password });
 
         if (!email || !password) {
             setError('Please enter both email and password.');
@@ -18,17 +19,21 @@ const SignIn: React.FC = () => {
 
         try {
             const response = await API.post('/auth/login', {
-                email,
+                username: email,
                 password,
             });
 
-            const token = response.data.token;
-            localStorage.setItem('token', token);
+            const token = response.data; // 🟡 If backend returns raw string
+            // const token = response.data.token; // 🔵 Use this if backend returns { token: '...' }
 
+            localStorage.setItem('token', token);
             setError('');
-            navigate('/dashboard');
+            navigate('/dashboard'); // ✅ Redirect on success
         } catch (err: any) {
-            if (err.response?.data?.message) {
+            console.error('Login error:', err);
+            if (err.response?.status === 401) {
+                setError('Invalid username or password.');
+            } else if (err.response?.data?.message) {
                 setError(err.response.data.message);
             } else {
                 setError('Login failed. Please try again.');
@@ -43,7 +48,7 @@ const SignIn: React.FC = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="email"
-                        placeholder="Email"
+                        placeholder="Email or Username"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

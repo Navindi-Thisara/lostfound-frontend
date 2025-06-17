@@ -1,16 +1,39 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignUp: React.FC = () => {
     const [form, setForm] = useState({ email: "", password: "", name: "" });
+    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Implement registration logic
-        console.log(form);
+
+        try {
+            const response = await fetch("http://localhost:8080/lostfound/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(form),
+            });
+
+            if (!response.ok) {
+                // Attempt to read error message from response
+                const errorData = await response.json();
+                alert(`Registration failed: ${errorData.message || response.statusText}`);
+                return;
+            }
+
+            alert("Registration successful! Redirecting to Sign In...");
+            navigate("/signin"); // Navigate to Sign In page
+        } catch (error) {
+            console.error("Signup error:", error);
+            alert("An unexpected error occurred. Please try again.");
+        }
     };
 
     return (
