@@ -1,46 +1,125 @@
-# Getting Started with Create React App
+# 🎒 Lost and Found System - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the **frontend** of the **Lost and Found Application for an Educational Institute**. It allows students and staff to report, manage, and track lost and found items through a user-friendly web interface.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Features
 
-### `npm start`
+- 🔐 User Registration & Login (JWT-based authentication)
+- 🧾 Add, Edit, and Delete Lost & Found Items
+- 🔍 Item Search and Filtering
+- 🧑‍💼 Role-Based Dashboard
+- 🎨 Responsive UI with Tailwind CSS
+- 🌐 REST API integration using Axios
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 📁 Project Structure
 
-### `npm test`
+public/
+Static public assets (e.g., favicon.ico, index.html)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+src/
+Source code directory
 
-### `npm run build`
+api/
+Axios instance and API call logic
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+components/
+Reusable UI components (e.g., forms, buttons)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+pages/
+Page-level components like SignIn, SignUp, Dashboard, etc.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+routes/
+Route configuration and ProtectedRoute logic
 
-### `npm run eject`
+types/
+Custom TypeScript interfaces and types
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+utils/
+Utility/helper functions (e.g., delete handler)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+App.tsx
+Main application component that defines routes
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+main.tsx
+Application entry point that renders <App />
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+tailwind.config.js
+Tailwind CSS configuration
 
-## Learn More
+tsconfig.json
+TypeScript configuration
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+package.json
+Project dependencies and scripts
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🛠️ Tech Stack
+
+- **React** + **TypeScript**
+- **Tailwind CSS**
+- **React Router DOM**
+- **Axios**
+- **Vite** (or CRA if you're not using Vite)
+
+---
+
+## 🔧 Getting Started
+
+### 1. Clone the Repository
+
+git clone https://github.com/Navindi-Thisara/lostfound-frontend.git
+cd lostfound-frontend
+
+### 2. Install Dependencies
+
+npm install
+
+### 3. Set API Base URL
+Check src/api/axios.ts and ensure the backend base URL is correct:
+
+baseURL: 'http://localhost:8080/lostfound/api'
+
+### 4. Start the Development Server
+
+npm start
+
+Frontend runs by default on http://localhost:3000
+
+## 🔐 Authentication
+
+- JWT token is stored in localStorage.
+
+- Axios automatically adds the token to Authorization headers via interceptors.
+
+## 📦 Available Scripts
+
+| Command         | Description                |
+| --------------- | -------------------------- |
+| `npm start`     | Start development server   |
+| `npm run build` | Build for production       |
+| `npm run lint`  | Run linter (if configured) |
+
+## 📸 Screenshots
+![Screenshot (1040)](https://github.com/user-attachments/assets/18d13fab-d0e9-4b1a-91b9-b56e0b55883a)
+![Screenshot (1041)](https://github.com/user-attachments/assets/917bc6e6-94da-42f3-b315-9379f4aa5ead)
+
+## 🤝 Contributing
+
+1. Fork the repo
+
+2. Create a branch (git checkout -b feature/new-ui)
+
+3. Commit changes (git commit -m "Add new UI component")
+
+4. Push (git push origin feature/new-ui)
+
+5. Open a Pull Request
+
+## 📜 License
+MIT License © Navindi-Thisara
+
+
