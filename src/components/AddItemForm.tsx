@@ -16,20 +16,31 @@ const AddItemForm: React.FC<AddItemFormProps> = ({ onAdd }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [dateFound, setDateFound] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
+        setLoading(true);
+
         try {
             const newItem = { name, description, dateFound };
             const res = await axios.post('/items', newItem);
-            onAdd(res.data); // Pass the newly added item to parent component
+            onAdd(res.data);
 
             // Clear form inputs after successful submission
             setName('');
             setDescription('');
             setDateFound('');
-        } catch (error) {
-            alert('Failed to add item');
+
+            setSuccess(true);
+            setTimeout(() => setSuccess(false), 3000); // Hide success after 3 seconds
+        } catch {
+            setError('Failed to add item. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -40,6 +51,9 @@ const AddItemForm: React.FC<AddItemFormProps> = ({ onAdd }) => {
         >
             <h2 className="text-xl font-semibold mb-4">Add New Item</h2>
 
+            {error && <p className="text-red-600 mb-4">{error}</p>}
+            {success && <p className="text-green-600 mb-4">Item added successfully!</p>}
+
             <label className="block mb-3">
                 Name:
                 <input
@@ -49,6 +63,7 @@ const AddItemForm: React.FC<AddItemFormProps> = ({ onAdd }) => {
                     placeholder="Name"
                     required
                     className="border p-2 w-full rounded mt-1"
+                    disabled={loading}
                 />
             </label>
 
@@ -61,6 +76,7 @@ const AddItemForm: React.FC<AddItemFormProps> = ({ onAdd }) => {
                     placeholder="Description"
                     required
                     className="border p-2 w-full rounded mt-1"
+                    disabled={loading}
                 />
             </label>
 
@@ -72,14 +88,18 @@ const AddItemForm: React.FC<AddItemFormProps> = ({ onAdd }) => {
                     onChange={(e) => setDateFound(e.target.value)}
                     required
                     className="border p-2 w-full rounded mt-1"
+                    disabled={loading}
                 />
             </label>
 
             <button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
+                disabled={loading}
+                className={`px-6 py-2 rounded text-white ${
+                    loading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                }`}
             >
-                Add Item
+                {loading ? 'Adding...' : 'Add Item'}
             </button>
         </form>
     );
