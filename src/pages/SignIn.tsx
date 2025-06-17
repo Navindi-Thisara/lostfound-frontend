@@ -19,14 +19,17 @@ const SignIn: React.FC = () => {
 
         try {
             const response = await API.post('/auth/login', {
-                username: email,
+
+                email,
                 password,
             });
 
-            const token = response.data; // 🟡 If backend returns raw string
-            // const token = response.data.token; // 🔵 Use this if backend returns { token: '...' }
+            console.log('Login response data:', response.data);
 
+            // Adjust this based on backend response shape:
+            const token = response.data.token || response.data;
             localStorage.setItem('token', token);
+
             setError('');
             navigate('/dashboard'); // ✅ Redirect on success
         } catch (err: any) {

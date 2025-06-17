@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import API from '../api/axios';  // Use centralized axios instance with baseURL configured
 import AddItemForm from '../components/AddItemForm';
 // @ts-ignore
 import EditItemForm from '../components/EditItemForm';
@@ -17,13 +17,14 @@ const Dashboard: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [editingItem, setEditingItem] = useState<Item | null>(null);
 
-    // Fetch items on component load
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const res = await axios.get('/items');
+                const res = await API.get('/items');
+                console.log('Fetched items:', res.data);
                 setItems(res.data);
-            } catch {
+            } catch (err) {
+                console.error('Fetch error:', err);
                 setError('Failed to fetch items');
             } finally {
                 setLoading(false);
@@ -32,17 +33,14 @@ const Dashboard: React.FC = () => {
         fetchItems();
     }, []);
 
-    // Add new item to state
     const handleAddItem = (newItem: Item) => {
         setItems(prev => [...prev, newItem]);
     };
 
-    // Set current item to be edited
     const startEdit = (item: Item) => {
         setEditingItem(item);
     };
 
-    // Update item in state
     const handleUpdateItem = (updatedItem: Item) => {
         setItems(prev =>
             prev.map(item => (item.id === updatedItem.id ? updatedItem : item))
@@ -50,10 +48,9 @@ const Dashboard: React.FC = () => {
         setEditingItem(null);
     };
 
-    // Delete item from backend and state
     const handleDelete = async (id: number) => {
         try {
-            await axios.delete(`/items/${id}`);
+            await API.delete(`/items/${id}`);
             setItems(prev => prev.filter(item => item.id !== id));
         } catch {
             alert('Failed to delete item');
@@ -69,12 +66,10 @@ const Dashboard: React.FC = () => {
                 Lost and Found Dashboard
             </h1>
 
-            {/* Add Item Form */}
             <div className="mb-8">
                 <AddItemForm onAdd={handleAddItem} />
             </div>
 
-            {/* Item List */}
             <ul>
                 {items.map(item => (
                     <li
@@ -104,7 +99,6 @@ const Dashboard: React.FC = () => {
                 ))}
             </ul>
 
-            {/* Edit Item Modal */}
             {editingItem && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <EditItemForm
