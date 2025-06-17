@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import API from '../api/axios'; // Make sure this path is correct
+import API from '../api/axios'; // Adjust path as needed
 
 const SignIn: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -22,7 +22,7 @@ const SignIn: React.FC = () => {
                 password,
             });
 
-            const token = response.data.token; // Your backend should return the JWT token in `token`
+            const token = response.data.token;
             localStorage.setItem('token', token);
 
             setError('');
@@ -37,63 +37,41 @@ const SignIn: React.FC = () => {
     };
 
     return (
-        <div style={styles.container}>
-            <h2>Sign In</h2>
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    style={styles.input}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    style={styles.input}
-                />
-                {error && <p style={styles.error}>{error}</p>}
-                <button type="submit" style={styles.button}>Sign In</button>
-            </form>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+                <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">Sign In</h2>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {error && <p className="text-red-500 text-sm">{error}</p>}
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200 font-semibold"
+                    >
+                        Sign In
+                    </button>
+                </form>
+                <p className="mt-4 text-sm text-center text-gray-600">
+                    Don't have an account?{' '}
+                    <a href="/signup" className="text-blue-500 hover:underline">
+                        Sign Up
+                    </a>
+                </p>
+            </div>
         </div>
     );
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
-    container: {
-        maxWidth: '400px',
-        margin: '80px auto',
-        padding: '2rem',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        textAlign: 'center',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
-    },
-    input: {
-        padding: '10px',
-        fontSize: '1rem',
-        borderRadius: '4px',
-        border: '1px solid #ccc',
-    },
-    button: {
-        padding: '10px',
-        backgroundColor: '#007bff',
-        color: '#fff',
-        fontWeight: 'bold',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-    },
-    error: {
-        color: 'red',
-        fontSize: '0.9rem',
-    },
 };
 
 export default SignIn;

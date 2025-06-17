@@ -1,130 +1,68 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import API from '../api/axios'; // axios instance
+import React, { useState } from "react";
 
 const SignUp: React.FC = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const navigate = useNavigate();
+    const [form, setForm] = useState({ email: "", password: "", name: "" });
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        // Client-side validation
-        if (!name || !email || !password || !confirmPassword) {
-            setError('All fields are required.');
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setError('Passwords do not match.');
-            return;
-        }
-
-        try {
-            const response = await API.post('/auth/register', {
-                name,
-                email,
-                password
-            });
-
-            setSuccess('Account created successfully!');
-            setError('');
-
-            // Redirect to sign-in page after a short delay
-            setTimeout(() => {
-                navigate('/');
-            }, 1500);
-        } catch (err: any) {
-            if (err.response?.data?.message) {
-                setError(err.response.data.message);
-            } else {
-                setError('Registration failed. Please try again.');
-            }
-        }
+        // TODO: Implement registration logic
+        console.log(form);
     };
 
     return (
-        <div style={styles.container}>
-            <h2>Sign Up</h2>
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
-                    type="text"
-                    placeholder="Full Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    style={styles.input}
-                />
-                <input
-                    type="email"
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    style={styles.input}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    style={styles.input}
-                />
-                <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    style={styles.input}
-                />
-                {error && <p style={styles.error}>{error}</p>}
-                {success && <p style={styles.success}>{success}</p>}
-                <button type="submit" style={styles.button}>Sign Up</button>
-            </form>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+            <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+                <h2 className="text-2xl font-bold text-center mb-6 text-blue-600">
+                    Create Account
+                </h2>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Full Name"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={form.password}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition font-semibold"
+                    >
+                        Sign Up
+                    </button>
+                </form>
+                <p className="mt-4 text-center text-sm text-gray-600">
+                    Already have an account?{" "}
+                    <a href="/signin" className="text-blue-500 hover:underline">
+                        Sign In
+                    </a>
+                </p>
+            </div>
         </div>
     );
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
-    container: {
-        maxWidth: '450px',
-        margin: '80px auto',
-        padding: '2rem',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        textAlign: 'center',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
-    },
-    input: {
-        padding: '10px',
-        fontSize: '1rem',
-        borderRadius: '4px',
-        border: '1px solid #ccc',
-    },
-    button: {
-        padding: '10px',
-        backgroundColor: '#28a745',
-        color: '#fff',
-        fontWeight: 'bold',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-    },
-    error: {
-        color: 'red',
-        fontSize: '0.9rem',
-    },
-    success: {
-        color: 'green',
-        fontSize: '0.9rem',
-    },
 };
 
 export default SignUp;

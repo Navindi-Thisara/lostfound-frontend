@@ -1,79 +1,117 @@
-import React, { useState, useEffect } from 'react';
-import API from '../api/axios';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import AddItemForm from '../components/AddItemForm';
+// @ts-ignore
+import EditItemForm from '../components/EditItemForm';
 
-interface Item {
+export interface Item {
     id: number;
     name: string;
-    status: 'LOST' | 'FOUND';
     description: string;
+    dateFound: string;
 }
 
 const Dashboard: React.FC = () => {
     const [items, setItems] = useState<Item[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [editingItem, setEditingItem] = useState<Item | null>(null);
 
+    // Fetch items on component load
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                setLoading(true);
-                const response = await API.get('/items');
-                setItems(response.data);
-                setError(null);
-            } catch (err) {
-                setError('Failed to load items.');
+                const res = await axios.get('/items');
+                setItems(res.data);
+            } catch {
+                setError('Failed to fetch items');
             } finally {
                 setLoading(false);
             }
         };
-
         fetchItems();
     }, []);
 
-    if (loading) {
-        return <p className="text-center mt-10 text-lg text-gray-500">Loading items...</p>;
-    }
+    // Add new item to state
+    const handleAddItem = (newItem: Item) => {
+        setItems(prev => [...prev, newItem]);
+    };
 
-    if (error) {
-        return <p className="text-center mt-10 text-red-500">{error}</p>;
-    }
+    // Set current item to be edited
+    const startEdit = (item: Item) => {
+        setEditingItem(item);
+    };
+
+    // Update item in state
+    const handleUpdateItem = (updatedItem: Item) => {
+        setItems(prev =>
+            prev.map(item => (item.id === updatedItem.id ? updatedItem : item))
+        );
+        setEditingItem(null);
+    };
+
+    // Delete item from backend and state
+    const handleDelete = async (id: number) => {
+        try {
+            await axios.delete(`/items/${id}`);
+            setItems(prev => prev.filter(item => item.id !== id));
+        } catch {
+            alert('Failed to delete item');
+        }
+    };
+
+    if (loading) return <p className="text-center mt-8">Loading items...</p>;
+    if (error) return <p className="text-center text-red-600">{error}</p>;
 
     return (
-        <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
-            <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Lost & Found Items</h2>
+        <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold mb-6 text-center">
+                Lost and Found Dashboard
+            </h1>
 
-            {items.length === 0 ? (
-                <p className="text-center text-gray-500">No items found.</p>
-            ) : (
-                <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white border border-gray-200 rounded-md overflow-hidden">
-                        <thead className="bg-gray-100">
-                        <tr>
-                            <th className="text-left py-3 px-4 font-medium text-gray-700 border-b">Name</th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-700 border-b">Status</th>
-                            <th className="text-left py-3 px-4 font-medium text-gray-700 border-b">Description</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {items.map((item) => (
-                            <tr key={item.id} className="hover:bg-gray-50">
-                                <td className="py-2 px-4 border-b">{item.name}</td>
-                                <td className="py-2 px-4 border-b">
-                    <span
-                        className={`px-2 py-1 rounded text-sm font-semibold ${
-                            item.status === 'LOST'
-                                ? 'bg-red-100 text-red-700'
-                                : 'bg-green-100 text-green-700'
-                        }`}
+            {/* Add Item Form */}
+            <div className="mb-8">
+                <AddItemForm onAdd={handleAddItem} />
+            </div>
+
+            {/* Item List */}
+            <ul>
+                {items.map(item => (
+                    <li
+                        key={item.id}
+                        className="border rounded p-4 mb-4 flex justify-between items-center bg-white shadow"
                     >
-                      {item.status}
-                    </span>
-                                </td>
-                                <td className="py-2 px-4 border-b">{item.description}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                        <div>
+                            <p><strong>Name:</strong> {item.name}</p>
+                            <p><strong>Description:</strong> {item.description}</p>
+                            <p><strong>Date Found:</strong> {item.dateFound}</p>
+                        </div>
+                        <div className="space-x-2">
+                            <button
+                                onClick={() => startEdit(item)}
+                                className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded"
+                            >
+                                Edit
+                            </button>
+                            <button
+                                onClick={() => handleDelete(item.id)}
+                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+
+            {/* Edit Item Modal */}
+            {editingItem && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <EditItemForm
+                        item={editingItem}
+                        onCancel={() => setEditingItem(null)}
+                        onUpdate={handleUpdateItem}
+                    />
                 </div>
             )}
         </div>
